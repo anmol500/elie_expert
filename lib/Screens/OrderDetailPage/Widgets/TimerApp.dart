@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:elie_expert/Utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+//ignore: must_be_immutable
 class TimerApp extends StatefulWidget {
   TimerApp(this.isActive);
   var isActive = false;
@@ -68,19 +67,23 @@ class LabelText extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: spAppOrange,
-          gradient: LinearGradient(colors: [spAppOrange, Colors.pink], begin: Alignment.centerLeft, end: Alignment.topCenter)),
+        borderRadius: BorderRadius.circular(12),
+        color: highLcolor,
+        image: DecorationImage(
+          image: AssetImage('assets/card_bg.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             '$value',
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Text(
             '$label',
-            style: TextStyle(color: Colors.white70, fontSize: 14),
+            style: TextStyle(color: Colors.black, fontSize: 14),
           ),
         ],
       ),

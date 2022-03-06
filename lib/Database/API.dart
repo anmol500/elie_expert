@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:elie_expert/Utils/Colors.dart';
 import 'Cart.dart';
 import 'Expert.dart';
 import 'Locator.dart';
@@ -14,40 +15,40 @@ class API {
   var dio = Dio();
 
   addCustomer(json) async {
-    response = await dio.post('http://142.93.212.17:8001/registerCustomer', data: jsonEncode(json));
+    response = await dio.post('http://$baseUrl:8001/registerCustomer', data: jsonEncode(json));
   }
 
   addLocationTrack(json) async {
-    response = await dio.post('http://142.93.212.17:8001/add_track', data: jsonEncode(json));
+    response = await dio.post('http://$baseUrl:8001/add_track', data: jsonEncode(json));
   }
 
   addCart(json) async {
-    response = await dio.post('http://142.93.212.17:8001/addCart', data: jsonEncode(json));
+    response = await dio.post('http://$baseUrl:8001/addCart', data: jsonEncode(json));
   }
 
   deleteCart(id) async {
-    response = await dio.delete('http://142.93.212.17:8001/deleteCartById/$id');
+    response = await dio.delete('http://$baseUrl:8001/deleteCartById/$id');
   }
 
   deleteCartId(cartId, id) async {
     response = await dio.delete(
-      'http://142.93.212.17:8001/deleteCartByCartId/$cartId?id=$id',
+      'http://$baseUrl:8001/deleteCartByCartId/$cartId?id=$id',
     );
   }
 
   updateQuantity(id, cartId, quantity) async {
     response = await dio.post(
-      'http://142.93.212.17:8001/updateQuantity/$id?cartId=$cartId&quantity=$quantity',
+      'http://$baseUrl:8001/updateQuantity/$id?cartId=$cartId&quantity=$quantity',
     );
   }
 
   addOrder(json) async {
     print(json.toString());
-    response = await dio.post('http://142.93.212.17:8001/addOrder', data: jsonEncode(json));
+    response = await dio.post('http://$baseUrl:8001/addOrder', data: jsonEncode(json));
   }
 
   Future<List<Customers>> getCustomer() async {
-    response = await dio.get('http://142.93.212.17:8001/getCustomer');
+    response = await dio.get('http://$baseUrl:8001/getCustomer');
 
     if (response.statusCode == 200 && response.data != 0000) {
       List user = response.data;
@@ -61,7 +62,7 @@ class API {
   }
 
   Future<List<Experts>> getExperts() async {
-    response = await dio.get('http://142.93.212.17:8001/get_all_expert');
+    response = await dio.get('http://$baseUrl:8001/get_all_expert');
 
     if (response.statusCode == 200 && response.data != 0000) {
       List user = response.data;
@@ -75,7 +76,7 @@ class API {
   }
 
   Future<Customers?> getCustomerByPhone(phone) async {
-    response = await dio.get('http://142.93.212.17:8001/getCustomerByPhone/$phone');
+    response = await dio.get('http://$baseUrl:8001/getCustomerByPhone/$phone');
 
     if (response.statusCode == 200 && response.data != 0000) {
       var user = response.data;
@@ -93,7 +94,7 @@ class API {
   }
 
   Future<Experts?> getExpertByPhone(phone) async {
-    response = await dio.get('http://142.93.212.17:8001/get_expert_phone/$phone');
+    response = await dio.get('http://$baseUrl:8001/get_expert_phone/$phone');
 
     if (response.statusCode == 200 && response.data != 0000) {
       var user = response.data;
@@ -111,7 +112,7 @@ class API {
   }
 
   Future<List<Tracking>?> getExpertLocationById(id) async {
-    response = await dio.get('http://142.93.212.17:8001/total_tracking/$id');
+    response = await dio.get('http://$baseUrl:8001/total_tracking/$id');
 
     if (response.statusCode == 200) {
       List loc = response.data;
@@ -124,7 +125,7 @@ class API {
   }
 
   Future<List<Product>> getProducts() async {
-    response = await dio.get('http://142.93.212.17:8001/getProduct');
+    response = await dio.get('http://$baseUrl:8001/getProduct');
 
     if (response.statusCode == 200) {
       List productList = response.data;
@@ -137,7 +138,7 @@ class API {
   }
 
   Future<Product> getProductsByID(id) async {
-    response = await dio.get('http://142.93.212.17:8001/getProductByID/$id');
+    response = await dio.get('http://$baseUrl:8001/getProductByID/$id');
 
     if (response.statusCode == 200) {
       return Product.fromJson(response.data);
@@ -148,7 +149,7 @@ class API {
   }
 
   Future<List<Services>> getServices() async {
-    response = await dio.get('http://142.93.212.17:8001/getService');
+    response = await dio.get('http://$baseUrl:8001/getService');
 
     if (response.statusCode == 200) {
       List serviceList = response.data;
@@ -161,7 +162,7 @@ class API {
   }
 
   Future<Services> getServiceByID(id) async {
-    response = await dio.get('http://142.93.212.17:8001/getServiceByID/$id');
+    response = await dio.get('http://$baseUrl:8001/getServiceByID/$id');
 
     if (response.statusCode == 200) {
       return Services.fromJson(response.data);
@@ -172,7 +173,7 @@ class API {
   }
 
   Future<List<Cart>> getCartById(id) async {
-    response = await dio.get('http://142.93.212.17:8001/getCartById/${getItUserIn.userPhone}');
+    response = await dio.get('http://$baseUrl:8001/getCartById/${getItUserIn.userPhone}');
 
     if (response.statusCode == 200) {
       List cartList = response.data;
@@ -187,7 +188,7 @@ class API {
   }
 
   Future<List<Order>> getOrderById(id) async {
-    response = await dio.get('http://142.93.212.17:8001/getOrderById/${getItUserIn.userPhone}');
+    response = await dio.get('http://$baseUrl:8001/getOrderById/${getItUserIn.userPhone}');
 
     if (response.statusCode == 200) {
       List orderList = response.data;
@@ -201,7 +202,7 @@ class API {
   }
 
   Future<List<Order>> getOrder() async {
-    response = await dio.get('http://142.93.212.17:8001/getOrder');
+    response = await dio.get('http://$baseUrl:8001/getOrder');
 
     if (response.statusCode == 200) {
       List serviceList = response.data;
@@ -214,7 +215,7 @@ class API {
   }
 
   Future<List<Order>> getOrderByExpert(phone) async {
-    response = await dio.get('http://142.93.212.17:8001/get_bookings_expertId/$phone');
+    response = await dio.get('http://$baseUrl:8001/get_bookings_expertId/$phone');
 
     if (response.statusCode == 200) {
       List serviceList = response.data;
@@ -227,7 +228,7 @@ class API {
   }
 
   Future<Order> getOrderByOrderId(orderId) async {
-    response = await dio.get('http://142.93.212.17:8001/getOrderByOrderId/$orderId');
+    response = await dio.get('http://$baseUrl:8001/getOrderByOrderId/$orderId');
 
     if (response.statusCode == 200) {
       return Order.fromJson(response.data);
@@ -239,7 +240,7 @@ class API {
 
   updateOrderById(id, of, to) async {
     response = await dio.post(
-      'http://142.93.212.17:8001/updateOrderById/$id?of=$of&to=$to',
+      'http://$baseUrl:8001/updateOrderById/$id?of=$of&to=$to',
     );
   }
 }

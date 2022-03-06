@@ -1,7 +1,6 @@
-import 'package:elie_expert/Database/API.dart';
 import 'package:elie_expert/Database/Order.dart';
-import 'package:elie_expert/Database/Service.dart';
 import 'package:elie_expert/Screens/OrderPage/OrderPageModel.dart';
+import 'package:elie_expert/Utils/Colors.dart';
 import 'package:flutter/material.dart';
 
 import 'Widget/OrderCard.dart';
@@ -28,6 +27,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: midBlack,
       child: FutureBuilder(
         future: OrderPageModel().getOrderByExpert(),
         builder: (BuildContext context, AsyncSnapshot<List<Order>> snapshot) {

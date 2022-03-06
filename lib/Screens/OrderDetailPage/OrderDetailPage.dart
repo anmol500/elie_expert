@@ -4,9 +4,11 @@ import 'package:elie_expert/Database/Service.dart';
 import 'package:elie_expert/Screens/OrderDetailPage/OrderMap.dart';
 import 'package:elie_expert/Screens/OrderDetailPage/Widgets/TimerApp.dart';
 import 'package:elie_expert/Utils/Colors.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:elie_expert/Utils/CustomButtons.dart';
+import 'package:elie_expert/Utils/rating_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class OrderDetailPage extends StatefulWidget {
   const OrderDetailPage({Key? key, required this.service, required this.order}) : super(key: key);
@@ -31,8 +33,47 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     } catch (e) {
       print(e);
     }
+    TextEditingController descCont = TextEditingController();
+    var rateDia = RatingDialog(
+      commentController: descCont,
+      initialRating: 1.0,
+      // your app's name?
+      title: Text(
+        'Rate your Customer',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 25,
+          color: highLcolorDark,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      // encourage your user to leave a high rating?
+      message: Text(
+        'order #${widget.order.orderId}',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18, color: highLcolorLight),
+      ),
+      // logo
+      image: 'http://$baseUrl:8001/getServiceImageByID/${widget.service.id}',
+      submitButtonText: 'Submit',
+      submitButtonTextStyle: TextStyle(color: highLcolor, fontSize: 18),
+      commentHint: 'Tell us about your experience',
+
+      onCancelled: () => print('cancelled'),
+      onSubmitted: (response) async {
+        print('rating: ${response.rating}, comment: ${response.comment}');
+
+        showTopSnackBar(
+          context,
+          CustomSnackBar.success(
+            backgroundColor: highLcolor,
+            message: "Thank you for your feedback",
+          ),
+        );
+      },
+    );
     return Scaffold(
-      backgroundColor: whiteSmoke,
+      backgroundColor: midBlack,
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,44 +84,84 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               long ?? 73.8881713,
             )),
             Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 5),
+              padding: const EdgeInsets.only(top: 5, bottom: 5),
               child: Container(
                 padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Booking Details',
-                      style: TextStyle(fontSize: 25),
+                    Center(
+                      child: Text(
+                        'Booking Details',
+                        style: TextStyle(fontSize: 25, color: highLcolor),
+                      ),
                     ),
-                    Text(
-                      'Order #${widget.order.orderId}',
-                      style: TextStyle(fontSize: 16),
+                    Center(
+                      child: Text(
+                        'Order #${widget.order.orderId}',
+                        style: TextStyle(fontSize: 16, color: highLcolor),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                      child: Divider(
+                        color: Colors.grey,
+                      ),
                     ),
                     Container(
                       height: 100,
-                      color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: Color(0xff0F0F0F),
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        border: Border.all(
+                          color: highLcolorLight,
+                        ),
+                      ),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: ListTile(
-                                    title: Text(widget.service.name),
-                                    subtitle: Text("At ${widget.order.time}"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            flex: 8,
-                          ),
                           Center(
                             child: Padding(
                               padding: EdgeInsets.all(10),
-                              child: Image.network("http://142.93.212.17:8001/getServiceImageByID/${widget.service.id}"),
+                              child: Image.network("http://$baseUrl:8001/getServiceImageByID/${widget.service.id}"),
                             ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: ListTile(
+                                      title: Text(
+                                        widget.service.name,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            "Time: ${widget.order.time}",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            "At ${widget.order.location}",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            flex: 8,
                           ),
                         ],
                       ),
@@ -99,25 +180,44 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Text(
                                     'Service Ended Successfully',
-                                    style: TextStyle(fontSize: 18),
+                                    style: TextStyle(fontSize: 18, color: Colors.white),
                                   ),
+                                ),
+                                Text(
+                                  'Rate Your Customer',
+                                  style: TextStyle(fontSize: 18, color: Colors.white70),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                BackgroundImageButton(
+                                  onPress: () {
+                                    showDialog(
+                                        context: context,
+                                        barrierDismissible: true, // set to false if you want to force a rating
+                                        builder: (context) => rateDia);
+                                  },
+                                  title: 'Give Review',
+                                ),
+                                SizedBox(
+                                  height: 20,
                                 ),
                                 SizedBox(
                                   width: double.infinity,
                                   height: 50,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      primary: spAppOrange,
+                                      primary: highLcolor,
                                     ),
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
                                     child: Text(
                                       'Back to Orders',
-                                      style: TextStyle(fontSize: 18),
+                                      style: TextStyle(fontSize: 18, color: Colors.black),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             )),
                           )
@@ -128,17 +228,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: SizedBox(
                                   height: 50,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(primary: Colors.pink),
-                                    onPressed: isActive
+                                  child: BackgroundImageButton(
+                                    onPress: isActive
                                         ? null
                                         : () async {
-                                            await Dio().put('http://142.93.212.17:8001/button_startTime/${widget.order.orderId}');
+                                            await Dio().put('http://$baseUrl:8001/button_startTime/${widget.order.orderId}');
                                             setState(() {
                                               isActive = !isActive;
                                             });
                                           },
-                                    child: Text(isActive ? 'Service Started' : 'Start Service'),
+                                    title: isActive ? 'Service Started' : 'Start Service',
                                   ),
                                 ),
                               )),
@@ -147,18 +246,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: SizedBox(
                                   height: 50,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(primary: spAppOrange),
-                                    onPressed: !isActive
+                                  child: BorderRadiusButton(
+                                    onPress: !isActive
                                         ? null
                                         : () async {
-                                            await Dio().put('http://142.93.212.17:8001/button_endTime/${widget.order.orderId}');
+                                            await Dio().put('http://$baseUrl:8001/button_endTime/${widget.order.orderId}');
                                             setState(() {
                                               isActive = !isActive;
                                               done = true;
                                             });
                                           },
-                                    child: Text('End Service'),
+                                    title: 'End Service',
                                   ),
                                 ),
                               )),

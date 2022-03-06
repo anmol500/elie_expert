@@ -43,12 +43,12 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         meetings.add(Appointment(
             startTime: dateTime,
             endTime: dateTime.add(Duration(minutes: service.duration)),
-            color: spAppOrange,
+            color: highLcolorDark,
             subject: 'Booking',
             id: service.id,
             notes: order.orderId.toString()));
       } else {
-        booking = await Dio().get('http://142.93.212.17:8001/get_bookings_expertId/${getItUserIn.userPhone}');
+        booking = await Dio().get('http://$baseUrl:8001/get_bookings_expertId/${getItUserIn.userPhone}');
       }
     }
     if (booking != null) {
@@ -56,8 +56,9 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
         meetings.add(Appointment(
             startTime: DateFormat('yyyy-MM-ddTHH:mm:ss').parse(d['startTime']),
             endTime: DateFormat('yyyy-MM-ddTHH:mm:ss').parse(d['endTime']),
-            color: Colors.green,
+            color: Colors.redAccent,
             subject: 'Leave',
+            id: d['bookingId'],
             notes: "Not Available"));
       }
     }
@@ -79,100 +80,193 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
       child: loading
           ? Center(
               child: CircularProgressIndicator(
-                color: spAppOrange,
+                color: highLcolor,
               ),
             )
           : Column(
               children: [
                 Expanded(
                   child: SfCalendar(
+                    backgroundColor: whiteSmoke,
+                    todayHighlightColor: highLcolorDark,
                     view: CalendarView.week,
                     onTap: (value) async {
-                      Services service = value.appointments![0].id != null
-                          ? await API().getServiceByID(value.appointments![0].id)
-                          : Services(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                      if (value.appointments![0].notes != 'Not Available') {
+                        Services service = value.appointments![0].id = await API().getServiceByID(value.appointments![0].id);
+                        Order order = await API().getOrderByOrderId(value.appointments![0].notes);
 
-                      Order order = await API().getOrderByOrderId(value.appointments![0].notes);
-
-                      showMaterialModalBottomSheet(
-                          context: context,
-                          builder: (context) => SingleChildScrollView(
-                                child: Container(
-                                  color: whiteSmoke,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Booking Detail',
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                        ),
-                                        Card(
-                                          child: Container(
-                                            height: 100,
-                                            color: Colors.white,
-                                            child: Row(
-                                              children: [
-                                                Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: Image.network("http://142.93.212.17:8001/getServiceImageByID/${service.id}"),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Container(
-                                                    alignment: Alignment.topLeft,
-                                                    child: Column(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 5,
-                                                          child: ListTile(
-                                                            title: Text(service.name),
-                                                            subtitle: Text("At ${DateFormat("hh:mm a").format(value.appointments![0]?.startTime)}"),
-                                                          ),
-                                                        ),
-                                                        Expanded(
-                                                          flex: 5,
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            children: [
-                                                              SizedBox(
-                                                                width: 8,
-                                                              ),
-                                                              TextButton(
-                                                                child: Text("View Details"),
-                                                                onPressed: () {
-                                                                  Navigator.push(
-                                                                      (context),
-                                                                      MaterialPageRoute(
-                                                                          builder: (context) => OrderDetailPage(service: service, order: order)));
-                                                                },
-                                                              ),
-                                                              SizedBox(
-                                                                width: 8,
-                                                              )
-                                                            ],
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  flex: 8,
-                                                ),
-                                              ],
+                        showMaterialModalBottomSheet(
+                            context: context,
+                            builder: (context) => SingleChildScrollView(
+                                  child: Container(
+                                    color: whiteSmoke,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Booking Detail',
+                                              style: TextStyle(fontSize: 18),
                                             ),
                                           ),
-                                          elevation: 0,
-                                        ),
-                                      ],
+                                          Card(
+                                            child: Container(
+                                              height: 100,
+                                              color: Colors.white,
+                                              child: Row(
+                                                children: [
+                                                  Center(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.all(10),
+                                                      child: Image.network("http://$baseUrl:8001/getServiceImageByID/${service.id}"),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      alignment: Alignment.topLeft,
+                                                      child: Column(
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 5,
+                                                            child: ListTile(
+                                                              title: Text(service.name),
+                                                              subtitle: Text("At ${DateFormat("hh:mm a").format(value.appointments![0]?.startTime)}"),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 5,
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 8,
+                                                                ),
+                                                                TextButton(
+                                                                  child: Text("View Details"),
+                                                                  onPressed: () {
+                                                                    Navigator.push(
+                                                                        (context),
+                                                                        MaterialPageRoute(
+                                                                            builder: (context) => OrderDetailPage(service: service, order: order)));
+                                                                  },
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 8,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    flex: 8,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            elevation: 0,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ));
+                                ));
+                      } else {
+                        showMaterialModalBottomSheet(
+                            context: context,
+                            builder: (context) => SingleChildScrollView(
+                                  child: Container(
+                                    color: whiteSmoke,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Leave Detail',
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                          Card(
+                                            child: Container(
+                                              height: 200,
+                                              color: Colors.white,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      alignment: Alignment.topLeft,
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(18.0),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  'From',
+                                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                                ),
+                                                                Text(
+                                                                  DateFormat().format(value.appointments![0].startTime),
+                                                                  style: TextStyle(fontSize: 14),
+                                                                ),
+                                                                Text(
+                                                                  'To',
+                                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                                ),
+                                                                Text(
+                                                                  DateFormat().format(value.appointments![0].endTime),
+                                                                  style: TextStyle(fontSize: 14),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 5,
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: 8,
+                                                                ),
+                                                                TextButton(
+                                                                  child: Text("Cancel Leave"),
+                                                                  onPressed: () async {
+                                                                    await Dio().delete(
+                                                                        'http://$baseUrl:8001/delete_booking_bookingId/${value.appointments![0].id}');
+                                                                    Navigator.pop(context);
+                                                                    getData();
+                                                                  },
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 8,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    flex: 8,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            elevation: 0,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ));
+                      }
                     },
                     initialDisplayDate: DateTime.now(),
                     firstDayOfWeek: 1,
@@ -183,33 +277,50 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                     dataSource: MeetingDataSource(meetings),
                   ),
                 ),
-                Divider(
-                  color: Colors.grey,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              AvailabilityBottomSelector(context);
-                            },
-                            child: Text('Select your Off Time'),
+                Container(
+                  color: midBlack,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: GestureDetector(
+                              onTap: () {
+                                availabilityBottomSelector(context);
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff0F0F0F),
+                                  borderRadius: BorderRadius.all(Radius.circular(7)),
+                                  border: Border.all(
+                                    color: highLcolorLight,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Select your Off Time',
+                                    style: TextStyle(fontSize: 16, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          getData();
-                        },
-                        icon: Icon(
-                          Icons.refresh_outlined,
+                        IconButton(
+                          onPressed: () {
+                            getData();
+                          },
+                          icon: Icon(
+                            Icons.refresh_outlined,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -217,13 +328,14 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
     );
   }
 
-  Future<dynamic> AvailabilityBottomSelector(BuildContext context) {
+  Future<dynamic> availabilityBottomSelector(BuildContext context) {
     return showMaterialModalBottomSheet(
       context: context,
       builder: (context) => SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -258,12 +370,13 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                 titlePadding: 20,
                 textStyle: TextStyle(fontWeight: FontWeight.normal, color: Colors.black87),
                 activeTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                borderColor: Colors.grey,
+                borderColor: highLcolorDark,
                 backgroundColor: Colors.transparent,
-                activeBackgroundColor: spAppOrange,
+                activeBackgroundColor: Colors.black,
+                activeBorderColor: highLcolor,
                 firstTime: TimeOfDay(hour: 08, minute: 00),
                 lastTime: TimeOfDay(hour: 22, minute: 00),
-                timeStep: 10,
+                timeStep: 30,
                 timeBlock: 30,
                 onRangeCompleted: (range) => setState(() {
                   var t = range!.start;
@@ -274,29 +387,104 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                 }),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () async {
+                  print(24 - TimeOfDay.now().hour);
+                  await Dio().post("http://$baseUrl:8001/add_booking", data: {
+                    "orderId": '000',
+                    "expertId": getItUserIn.userPhone,
+                    "startTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate.add(Duration(
+                      hours: 8,
+                    ))),
+                    "endTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate.add(Duration(hours: 23, minutes: 59))),
+                  });
+                  selectedDate = DateTime.now();
+                  fromTime = DateTime.now();
+                  toTime = DateTime.now();
+                  Navigator.pop(context);
+                  getData();
+                },
+                child: Container(
+                  height: 40,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/card_bg.png'),
+                      fit: BoxFit.fill,
+                    ),
+                    color: Color(0xff0F0F0F),
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Whole Day Off',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                  onPressed: () {
+                GestureDetector(
+                  onTap: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Cancel'),
+                  child: Container(
+                    height: 40,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/card_bg.png'),
+                        fit: BoxFit.fill,
+                      ),
+                      color: Color(0xff0F0F0F),
+                      borderRadius: BorderRadius.all(Radius.circular(7)),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
+                GestureDetector(
+                  onTap: () async {
                     print(selectedDate);
                     print(fromTime);
-                    await Dio().post("http://142.93.212.17:8001/add_booking", data: {
+                    await Dio().post("http://$baseUrl:8001/add_booking", data: {
                       "orderId": '000',
                       "expertId": getItUserIn.userPhone,
                       "startTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(fromTime),
                       "endTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(toTime),
                     });
+                    selectedDate = DateTime.now();
+                    fromTime = DateTime.now();
+                    toTime = DateTime.now();
                     Navigator.pop(context);
                     getData();
                   },
-                  child: Text('OK'),
+                  child: Container(
+                    height: 40,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: Color(0xff0F0F0F),
+                      borderRadius: BorderRadius.all(Radius.circular(7)),
+                      border: Border.all(
+                        color: highLcolorLight,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Confirm',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             )

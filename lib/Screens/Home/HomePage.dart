@@ -1,10 +1,6 @@
-import 'dart:async';
-
-import 'package:elie_expert/Screens/LoginPage/loginPage.dart';
 import 'package:elie_expert/Utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ListOfPages.dart';
 
@@ -20,56 +16,42 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.logout_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-
-                prefs.clear();
-                Navigator.pop(context);
-                Navigator.push((context), MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-            )
-          ],
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          toolbarHeight: 70,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-                gradient: LinearGradient(colors: [spAppOrange, Colors.pink], begin: Alignment.bottomCenter, end: Alignment.topCenter)),
-          ),
-          title: Text("Elie's Expert"),
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black,
+          title: Center(child: Image.asset('assets/logo.png')),
         ),
-        backgroundColor: whiteSmoke,
+        backgroundColor: Colors.black,
         bottomNavigationBar: SalomonBottomBar(
           currentIndex: currentIndex,
           onTap: (i) => setState(() => currentIndex = i),
+          unselectedItemColor: Colors.white,
           items: [
             SalomonBottomBarItem(
               icon: Icon(Icons.home),
               title: Text("Orders"),
-              selectedColor: spAppOrange,
+              selectedColor: highLcolorLight,
             ),
             SalomonBottomBarItem(
               icon: Icon(Icons.event_available_outlined),
               title: Text("Availability"),
-              selectedColor: spAppOrange,
+              selectedColor: highLcolorLight,
             ),
             SalomonBottomBarItem(
               icon: Icon(
                 Icons.contact_mail_outlined,
               ),
               title: Text("SOS"),
-              selectedColor: spAppOrange,
+              selectedColor: highLcolorLight,
+            ),
+            SalomonBottomBarItem(
+              icon: Icon(
+                Icons.manage_accounts_outlined,
+              ),
+              title: Text("Profile"),
+              selectedColor: highLcolorLight,
             ),
           ],
         ),

@@ -28,7 +28,7 @@ class _OrderMapState extends State<OrderMap> {
       showTopSnackBar(
         context,
         CustomSnackBar.info(
-          backgroundColor: spAppOrange,
+          backgroundColor: highLcolor,
           message: "Please install Google Maps",
         ),
       );
@@ -112,8 +112,6 @@ class _OrderMapState extends State<OrderMap> {
             (pos) => _buildMarkerWidget(pos, Colors.red),
           );
 
-          final centerLocation = Offset(transformer.constraints.biggest.width / 2, transformer.constraints.biggest.height / 2);
-
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onScaleStart: _onScaleStart,
@@ -151,7 +149,7 @@ class _OrderMapState extends State<OrderMap> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: spAppOrange,
+        backgroundColor: highLcolor,
         onPressed: _gotoDefault,
         tooltip: 'My Location',
         child: Icon(Icons.map_outlined),

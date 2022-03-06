@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:elie_expert/Database/API.dart';
 import 'package:elie_expert/Database/Locator.dart';
 import 'package:elie_expert/Database/Tracking.dart';
-import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 
 class LocationTracking {
@@ -11,7 +10,6 @@ class LocationTracking {
   late PermissionStatus _permissionGranted;
   LocationData? _location;
   late LocationData _locationSubscription;
-  String? _error;
 
   Future<void> listenLocation() async {
     location.enableBackgroundMode(enable: true);
@@ -53,7 +51,7 @@ class LocationTracking {
       var parsedLocation = LocationForTracking(_location?.latitude, _location?.longitude).toJson();
       var parsedTracking = Tracking(parsedLocation, DateTime.now().toString(), DateTime.now().toString(), getItUserIn.userPhone).toJson();
       print(getItUserIn.userPhone);
-      var i = await API().addLocationTrack(parsedTracking);
+      await API().addLocationTrack(parsedTracking);
     });
   }
 }

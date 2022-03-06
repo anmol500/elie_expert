@@ -1,12 +1,10 @@
-import 'package:elie_expert/Screens/LoginPage/loginPage.dart';
-import 'package:elie_expert/Service/Location/ListenLocation.dart';
 import 'package:elie_expert/Service/Location/LocationTracking.dart';
 import 'package:elie_expert/Utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Database/API.dart';
 import 'Database/Locator.dart';
+import 'LoginRegis/login.dart';
 import 'Screens/Home/HomePage.dart';
 
 void main() {
@@ -59,9 +57,10 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: loading
           ? Scaffold(
+              backgroundColor: midBlack,
               body: Center(
                 child: CircularProgressIndicator(
-                  color: spAppOrange,
+                  color: highLcolor,
                 ),
               ),
             )
