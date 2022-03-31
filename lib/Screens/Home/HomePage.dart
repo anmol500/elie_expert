@@ -21,7 +21,13 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.black,
-          title: Center(child: Image.asset('assets/logo.png')),
+          title: Center(
+            child: Image.asset(
+              'assets/logo.jpg',
+              height: 60,
+              width: 134,
+            ),
+          ),
         ),
         backgroundColor: Colors.black,
         bottomNavigationBar: SalomonBottomBar(

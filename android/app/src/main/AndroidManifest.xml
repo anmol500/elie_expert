@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.elie.world.expert">
+    package="com.elie.world.expert.elie_expert">
+    <uses-permission android:name="android.permisssion.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="elie_expert"
         android:name="${applicationName}"
@@ -30,9 +33,5 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
     </application>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

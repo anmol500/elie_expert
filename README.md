@@ -1,6 +1,6 @@
 # elie_expert
 
-A new Flutter project.
+Elie_Expert App
 
 ## Getting Started
 

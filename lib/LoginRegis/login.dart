@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController phone = TextEditingController();
   TextEditingController otpController = TextEditingController();
   RoundedLoadingButtonController btController = RoundedLoadingButtonController();
+  bool btnLoad = false;
 
   @override
   void dispose() {
@@ -49,8 +50,8 @@ class _LoginPageState extends State<LoginPage> {
           automaticallyImplyLeading: false,
           title: Center(
             child: Image.asset(
-              'assets/logo.png',
-              height: 50,
+              'assets/logo.jpg',
+              height: 60,
               width: 134,
             ),
           ),
@@ -70,9 +71,11 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: BackgroundImageButton(
+                btnLoad: btnLoad,
                 title: 'Login',
                 onPress: () {
-                  print('hhhh');
+                  btnLoad = true;
+                  setState(() {});
                   doLogin();
                 },
               ),
@@ -82,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.all(20),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -293,7 +295,7 @@ class _LoginPageState extends State<LoginPage> {
                                                       btController.reset();
                                                     });
                                                   });
-                                                  Navigator.pop(context);
+
                                                   Navigator.push((context), MaterialPageRoute(builder: (context) => NewPassword()));
                                                 }
                                               } catch (e) {
@@ -386,6 +388,8 @@ class _LoginPageState extends State<LoginPage> {
             });
           });
         } else {
+          btnLoad = false;
+          setState(() {});
           showTopSnackBar(
             context,
             CustomSnackBar.error(
@@ -395,6 +399,9 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } else {
+        btnLoad = false;
+        setState(() {});
+
         showTopSnackBar(
           context,
           CustomSnackBar.error(
@@ -405,6 +412,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print(e);
+      btnLoad = false;
+      setState(() {});
 
       showTopSnackBar(
         context,
