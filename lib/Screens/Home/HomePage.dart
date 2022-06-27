@@ -22,10 +22,13 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.black,
           title: Center(
-            child: Image.asset(
-              'assets/logo.jpg',
-              height: 60,
-              width: 134,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'assets/logo.jpg',
+                height: 60,
+                width: 104,
+              ),
             ),
           ),
         ),

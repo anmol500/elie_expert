@@ -1,12 +1,37 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.elie.world.expert.elie_expert">
+    package="com.elie.expert">
     <uses-permission android:name="android.permisssion.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+<!--    <queries>-->
+<!--        &lt;!&ndash; If your app opens https URLs &ndash;&gt;-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.VIEW" />-->
+<!--            <data android:scheme="https" />-->
+<!--        </intent>-->
+<!--        &lt;!&ndash; If your app makes calls &ndash;&gt;-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.DIAL" />-->
+<!--            <data android:scheme="tel" />-->
+<!--        </intent>-->
+<!--        &lt;!&ndash; If your sends SMS messages &ndash;&gt;-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.SENDTO" />-->
+<!--            <data android:scheme="smsto" />-->
+<!--        </intent>-->
+<!--        &lt;!&ndash; If your app sends emails &ndash;&gt;-->
+<!--        <intent>-->
+<!--            <action android:name="android.intent.action.SEND" />-->
+<!--            <data android:mimeType="*/*" />-->
+<!--        </intent>-->
+<!--    </queries>-->
    <application
-        android:label="elie_expert"
+        android:label="Elie Experts"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,6 +51,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

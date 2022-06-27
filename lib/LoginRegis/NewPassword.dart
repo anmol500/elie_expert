@@ -42,7 +42,7 @@ class NewPassword extends StatelessWidget {
               child: BorderRadiusButton(
                 title: 'Reset Password',
                 onPress: () async {
-                  await Dio().put('http://$baseUrl:8001/update_expert', data: {
+                  await Dio().put('$baseUrl/update_expert', data: {
                     'phone': int.parse(phone.text),
                     "password": pass.text,
                   });

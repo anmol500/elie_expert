@@ -39,7 +39,7 @@ class SOSpage extends StatelessWidget {
                       //overlay with SOS options
 
                       var name = await API().getExpertByPhone(getItUserIn.userPhone);
-                      await Dio().post('http://$baseUrl:8001/add_sos', data: {
+                      await Dio().post('$baseUrl/add_sos', data: {
                         "orderId": getItUserIn.userPhone,
                         "sosMessage": "${name!.name} need help! Phone Number: ${name.phone}",
                         "date_time": DateTime.now().toString()

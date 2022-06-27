@@ -11,7 +11,7 @@ customTextField(title, type, cont, {ifsc = false, line = 1, mandate = false, onS
         }
         return null;
       },
-      obscureText: type == TextInputType.visiblePassword && visible ? true : false,
+      obscureText: type == TextInputType.visiblePassword && !visible ? true : false,
       maxLines: line,
       textCapitalization: ifsc ? TextCapitalization.characters : TextCapitalization.none,
       controller: cont,
@@ -23,7 +23,7 @@ customTextField(title, type, cont, {ifsc = false, line = 1, mandate = false, onS
             ? IconButton(
                 icon: Icon(
                   // Based on passwordVisible state choose the icon
-                  !visible ? Icons.visibility : Icons.visibility_off,
+                  !visible ? Icons.visibility_off : Icons.visibility,
                   color: highLcolorLight,
                 ),
                 onPressed: () {
@@ -31,7 +31,8 @@ customTextField(title, type, cont, {ifsc = false, line = 1, mandate = false, onS
                 },
               )
             : null,
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Color(0xDEB6A2).withOpacity(1))),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4), borderSide: BorderSide(color: Color(0xDEB6A2).withOpacity(1))),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
           borderSide: BorderSide(color: Color(0xDEB6A2).withOpacity(1)),

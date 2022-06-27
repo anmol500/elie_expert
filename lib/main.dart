@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:elie_expert/Service/Location/LocationTracking.dart';
 import 'package:elie_expert/Utils/Colors.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +12,16 @@ import 'Screens/Home/HomePage.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setup();
+  HttpOverrides.global = new MyHttpOverrides();
   runApp(MyApp());
   LocationTracking().listenLocation();
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -56,11 +66,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: loading
-          ? Scaffold(
-              backgroundColor: midBlack,
-              body: Center(
-                child: CircularProgressIndicator(
-                  color: highLcolor,
+          ? SafeArea(
+              child: Scaffold(
+                backgroundColor: midBlack,
+                body: Center(
+                  child: CircularProgressIndicator(
+                    color: highLcolor,
+                  ),
                 ),
               ),
             )

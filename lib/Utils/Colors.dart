@@ -9,5 +9,4 @@ var highLcolor = Color(0xffebab8b);
 var highLcolorLight = Color(0xfff5b595);
 var highLcolorDark = Color(0xffA36E53);
 
-var baseUrl = '68.183.89.66';
-// var baseUrl = '142.93.212.17';
+var baseUrl = 'https://api.elie.world';

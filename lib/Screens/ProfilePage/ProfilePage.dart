@@ -18,6 +18,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../Utils/ExpertiseList.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -54,16 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List listsItems = ['Employee', 'Freelance'];
   String? vehicle;
   List vehicleList = ['2-Wheeler', '4-Wheeler', 'No'];
-  List expertiseList = [
-    'hair-cutting',
-    'colouring and styling',
-    'waxing',
-    'nail treatments',
-    'facials and skin care treatments',
-    'aromatherapy',
-    'tanning',
-    'massages'
-  ];
+
   var image;
   var imageAadhar1;
   var imageAadhar2;
@@ -128,13 +122,13 @@ class _ProfilePageState extends State<ProfilePage> {
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print('ppp' + prefs.get("userPhone").toString());
-    expert = await (await Dio().get('http://$baseUrl:8001/get_expert_phone/${prefs.get("userPhone").toString()}')).data;
+    expert = await (await Dio().get('$baseUrl/get_expert_phone/${prefs.get("userPhone").toString()}')).data;
 
     for (var d in expert['experience']) {
-      Uint8List tt = Uint8List.fromList((await NetworkAssetBundle(Uri.parse('http://$baseUrl:8001/get_single_expert_photo/$d'))
-              .load('http://$baseUrl:8001/get_single_expert_photo/$d'))
-          .buffer
-          .asUint8List());
+      Uint8List tt = Uint8List.fromList(
+          (await NetworkAssetBundle(Uri.parse('$baseUrl/get_single_expert_photo/$d')).load('$baseUrl/get_single_expert_photo/$d'))
+              .buffer
+              .asUint8List());
 
       setList(PortfolioImage(tt));
       addImage();
@@ -208,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             GestureDetector(
                               onTap: () async {
-                                FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                                FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true, type: FileType.image);
 
                                 if (result != null) {
                                   image = result.files.single;
@@ -219,10 +213,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(100.0),
-                                child: Image.network('http://$baseUrl:8001/getExpertProfilePic/${phone.text}',
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.fill, loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                child: Image.network('$baseUrl/getExpertProfilePic/${phone.text}', height: 150, width: 150, fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                                   if (loadingProgress == null) return child;
                                   return Center(
                                     child: CircularProgressIndicator(
@@ -617,7 +609,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: BorderRadiusButton(
                                 title: imageAadhar1 == null ? 'Update Your Aadhar Front' : 'Aadhar Front:' + imageAadhar1.name,
                                 onPress: () async {
-                                  FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                                  FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                    withData: true,
+                                    type: FileType.image,
+                                  );
 
                                   if (result != null) {
                                     imageAadhar1 = result.files.single;
@@ -633,7 +628,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: BorderRadiusButton(
                                 title: imageAadhar2 == null ? 'Update Your Aadhar Back' : 'Aadhar Back:' + imageAadhar2.name,
                                 onPress: () async {
-                                  FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                                  FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                    withData: true,
+                                    type: FileType.image,
+                                  );
 
                                   if (result != null) {
                                     imageAadhar2 = result.files.single;
@@ -649,7 +647,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: BorderRadiusButton(
                                 title: imagePan == null ? 'Update Your PAN' : imagePan.name,
                                 onPress: () async {
-                                  FilePickerResult? result = await FilePicker.platform.pickFiles();
+                                  FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                    withData: true,
+                                    type: FileType.image,
+                                  );
 
                                   if (result != null) {
                                     imagePan = result.files.single;
@@ -748,9 +749,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   setState(() {});
                                   print(_formKey.currentState!.validate());
                                   if (_formKey.currentState!.validate()) {
-                                    var ref = (await Dio().get('http://$baseUrl:8001/get_expert_phone/${int.parse(phone.text)}')).data;
+                                    var ref = (await Dio().get('$baseUrl/get_expert_phone/${int.parse(phone.text)}')).data;
                                     if (ref != null) {
-                                      await Dio().put('http://$baseUrl:8001/update_expert', data: {
+                                      await Dio().put('$baseUrl/update_expert', data: {
                                         "name": name.text,
                                         "nickname": nickname.text,
                                         "sex": gender,
@@ -774,26 +775,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                       });
 
                                       if (gender == 'Female' && period.text.isNotEmpty) {
-                                        await Dio().put('http://142.93.212.17:8001/add_period/${phone.text}',
+                                        await Dio().put('$baseUrl/add_period/${phone.text}',
                                             queryParameters: {'thedatetime': DateFormat('dd, MMMM yyyy').parse(period.text)});
                                       }
 
                                       if (image != null) {
-                                        await Dio().post('http://$baseUrl:8001/addExpertProfilePic/${phone.text}', data: image.bytes);
+                                        await Dio().post('$baseUrl/addExpertProfilePic/${phone.text}', data: image.bytes);
                                       }
                                       if (imagePan != null) {
-                                        await Dio().post('http://$baseUrl:8001/add_expert_pan/${phone.text}', data: imagePan.bytes);
+                                        await Dio().post('$baseUrl/add_expert_pan/${phone.text}', data: imagePan.bytes);
                                       }
                                       if (imageAadhar1 != null && imageAadhar2 != null) {
-                                        await Dio().post('http://$baseUrl:8001/add_expert_aadhar/${phone.text}',
-                                            data: [imageAadhar1.bytes, imageAadhar2.bytes]);
+                                        await Dio().post('$baseUrl/add_expert_aadhar/${phone.text}', data: [imageAadhar1.bytes, imageAadhar2.bytes]);
                                       }
 
                                       if (portfolio != null) {
-                                        await Dio().post('http://$baseUrl:8001/add_expert_resume/${phone.text}', data: portfolio.bytes);
+                                        await Dio().post('$baseUrl/add_expert_resume/${phone.text}', data: portfolio.bytes);
                                       }
                                       if (imagesB.isNotEmpty) {
-                                        await Dio().post('http://$baseUrl:8001/add_expert_experience/${phone.text}', data: imagesB);
+                                        await Dio().post('$baseUrl/add_expert_experience/${phone.text}', data: imagesB);
                                       }
                                       getData();
                                       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -858,6 +858,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                   await preferences.clear();
                                   Navigator.pop(context);
                                   Navigator.push((context), MaterialPageRoute(builder: (context) => LoginPage()));
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: TextButton(
+                                child: Text(
+                                  'Privacy Policy',
+                                  style: TextStyle(color: highLcolor, fontSize: 16),
+                                ),
+                                onPressed: () async {
+                                  await launchUrl(Uri.parse('https://elie.world/Policy'));
                                 },
                               ),
                             ),

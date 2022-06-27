@@ -56,7 +56,7 @@ class _OrderCardState extends State<OrderCard> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     child: Image.network(
-                      'http://$baseUrl:8001/getServiceImageByID/${widget.data.serviceId}',
+                      '$baseUrl/getServiceImageByID/${widget.data.serviceId}',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -95,6 +95,30 @@ class _OrderCardState extends State<OrderCard> {
                         Row(
                           children: [
                             Text(
+                              'On: ',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                            ),
+                            Text(
+                              widget.data.date,
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'From: ',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                            ),
+                            Text(
+                              widget.data.time,
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
                               'Duration: ',
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
                             ),
@@ -109,30 +133,34 @@ class _OrderCardState extends State<OrderCard> {
                         ),
                         Row(
                           children: [
-                            BackgroundImageButton(
-                              onPress: () {
-                                print(widget.data.latlong);
-                                MapsLauncher.launchCoordinates(
-                                    double.parse(widget.data.latlong['latitude']), double.parse(widget.data.latlong['longitude']));
-                              },
-                              title: 'Get Location',
+                            Flexible(
+                              child: BackgroundImageButton(
+                                onPress: () {
+                                  print(widget.data.latlong['latitude']);
+                                  MapsLauncher.launchCoordinates(double.parse(widget.data.latlong['latitude']),
+                                      double.parse(widget.data.latlong['longitude']));
+                                },
+                                title: 'Get Location',
+                              ),
                             ),
                             SizedBox(
                               width: 5,
                             ),
-                            BorderRadiusButton(
-                              onPress: () {
-                                Navigator.push(
-                                  (context),
-                                  MaterialPageRoute(
-                                    builder: (context) => OrderDetailPage(
-                                      order: widget.data,
-                                      service: service,
+                            Flexible(
+                              child: BorderRadiusButton(
+                                onPress: () {
+                                  Navigator.push(
+                                    (context),
+                                    MaterialPageRoute(
+                                      builder: (context) => OrderDetailPage(
+                                        order: widget.data,
+                                        service: service,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              title: 'View Details',
+                                  );
+                                },
+                                title: 'View Details',
+                              ),
                             )
                           ],
                         )

@@ -11,9 +11,10 @@ class OrderPageModel {
   }
 
   Future<List<Order>> getOrderByExpert() async {
-    var booking = await Dio().get('http://$baseUrl:8001/get_bookings_expertId/${getItUserIn.userPhone}');
+    var booking = await Dio().get('$baseUrl/get_bookings_expertId/${getItUserIn.userPhone}');
     List<Order> orderList = [];
     for (var d in booking.data) {
+      print(d['isDone']);
       if (d['orderId'].toString() != '000' && d['isDone'] == false) {
         var order = await API().getOrderByOrderId(d['orderId']);
         orderList.add(order);

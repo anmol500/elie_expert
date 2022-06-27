@@ -48,7 +48,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
             id: service.id,
             notes: order.orderId.toString()));
       } else {
-        booking = await Dio().get('http://$baseUrl:8001/get_bookings_expertId/${getItUserIn.userPhone}');
+        booking = await Dio().get('$baseUrl/get_bookings_expertId/${getItUserIn.userPhone}');
       }
     }
     if (booking != null) {
@@ -92,7 +92,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                     view: CalendarView.week,
                     onTap: (value) async {
                       if (value.appointments![0].notes != 'Not Available') {
-                        Services service = value.appointments![0].id = await API().getServiceByID(value.appointments![0].id);
+                        Services service =
+                            value.appointments![0].id = await API().getServiceByID(value.appointments![0].id);
                         Order order = await API().getOrderByOrderId(value.appointments![0].notes);
 
                         showMaterialModalBottomSheet(
@@ -121,7 +122,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                                                   Center(
                                                     child: Padding(
                                                       padding: EdgeInsets.all(10),
-                                                      child: Image.network("http://$baseUrl:8001/getServiceImageByID/${service.id}"),
+                                                      child:
+                                                          Image.network("$baseUrl/getServiceImageByID/${service.id}"),
                                                     ),
                                                   ),
                                                   Expanded(
@@ -133,7 +135,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                                                             flex: 5,
                                                             child: ListTile(
                                                               title: Text(service.name),
-                                                              subtitle: Text("At ${DateFormat("hh:mm a").format(value.appointments![0]?.startTime)}"),
+                                                              subtitle: Text(
+                                                                  "At ${DateFormat("hh:mm a").format(value.appointments![0]?.startTime)}"),
                                                             ),
                                                           ),
                                                           Expanded(
@@ -150,7 +153,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                                                                     Navigator.push(
                                                                         (context),
                                                                         MaterialPageRoute(
-                                                                            builder: (context) => OrderDetailPage(service: service, order: order)));
+                                                                            builder: (context) => OrderDetailPage(
+                                                                                service: service, order: order)));
                                                                   },
                                                                 ),
                                                                 SizedBox(
@@ -211,7 +215,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                                                               children: [
                                                                 Text(
                                                                   'From',
-                                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                                  style: TextStyle(
+                                                                      fontSize: 16, fontWeight: FontWeight.bold),
                                                                 ),
                                                                 Text(
                                                                   DateFormat().format(value.appointments![0].startTime),
@@ -219,7 +224,8 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                                                                 ),
                                                                 Text(
                                                                   'To',
-                                                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                                  style: TextStyle(
+                                                                      fontSize: 16, fontWeight: FontWeight.bold),
                                                                 ),
                                                                 Text(
                                                                   DateFormat().format(value.appointments![0].endTime),
@@ -240,7 +246,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                                                                   child: Text("Cancel Leave"),
                                                                   onPressed: () async {
                                                                     await Dio().delete(
-                                                                        'http://$baseUrl:8001/delete_booking_bookingId/${value.appointments![0].id}');
+                                                                        '$baseUrl/delete_booking_bookingId/${value.appointments![0].id}');
                                                                     Navigator.pop(context);
                                                                     getData();
                                                                   },
@@ -392,13 +398,14 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
               child: GestureDetector(
                 onTap: () async {
                   print(24 - TimeOfDay.now().hour);
-                  await Dio().post("http://$baseUrl:8001/add_booking", data: {
+                  await Dio().post("$baseUrl/add_booking", data: {
                     "orderId": '000',
                     "expertId": getItUserIn.userPhone,
                     "startTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate.add(Duration(
                       hours: 8,
                     ))),
-                    "endTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate.add(Duration(hours: 23, minutes: 59))),
+                    "endTime":
+                        DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate.add(Duration(hours: 23, minutes: 59))),
                   });
                   selectedDate = DateTime.now();
                   fromTime = DateTime.now();
@@ -456,7 +463,7 @@ class _AvailabilityPageState extends State<AvailabilityPage> {
                   onTap: () async {
                     print(selectedDate);
                     print(fromTime);
-                    await Dio().post("http://$baseUrl:8001/add_booking", data: {
+                    await Dio().post("$baseUrl/add_booking", data: {
                       "orderId": '000',
                       "expertId": getItUserIn.userPhone,
                       "startTime": DateFormat('yyyy-MM-ddTHH:mm:ss').format(fromTime),

@@ -2,7 +2,6 @@ import 'package:elie_expert/Database/Order.dart';
 import 'package:elie_expert/Screens/OrderPage/OrderPageModel.dart';
 import 'package:elie_expert/Utils/Colors.dart';
 import 'package:flutter/material.dart';
-import 'package:visibility_aware_state/visibility_aware_state.dart';
 
 import 'Widget/OrderCard.dart';
 
@@ -13,22 +12,10 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
-class _OrderPageState extends VisibilityAwareState<OrderPage> {
+class _OrderPageState extends State<OrderPage> {
   var orderLenght = 0;
   getInfo() async {
     orderLenght = await OrderPageModel().getOrderLenght();
-  }
-
-  @override
-  void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
-    super.onVisibilityChanged(visibility);
-    print(visibility);
-    if (visibility == WidgetVisibility.VISIBLE) {
-      getInfo();
-    } else {
-      dispose();
-    }
   }
 
   @override

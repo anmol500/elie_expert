@@ -14,6 +14,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'CustomButtons.dart';
 import 'Registration.dart';
@@ -49,10 +50,13 @@ class _LoginPageState extends State<LoginPage> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Center(
-            child: Image.asset(
-              'assets/logo.jpg',
-              height: 60,
-              width: 134,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'assets/logo.jpg',
+                height: 60,
+                width: 104,
+              ),
             ),
           ),
           elevation: 0,
@@ -85,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.all(20),
                 child: GestureDetector(
                   onTap: () {
+                    print('pressed register');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -190,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           ),
                                                         );
                                                       } else {
-                                                        await Dio().post('http://$baseUrl:8001/generate_otp/${phone.text}');
+                                                        await Dio().post('$baseUrl/generate_otp/${phone.text}');
                                                         showTopSnackBar(
                                                           context,
                                                           CustomSnackBar.success(
@@ -281,8 +286,8 @@ class _LoginPageState extends State<LoginPage> {
                                             if (otpController.text.length == 6) {
                                               print(otpController.text);
                                               try {
-                                                var otpVer = (await Dio().get('http://$baseUrl:8001/verify_customer/${phone.text}',
-                                                        queryParameters: {"otp": otpController.text}))
+                                                var otpVer = (await Dio()
+                                                        .get('$baseUrl/verify_customer/${phone.text}', queryParameters: {"otp": otpController.text}))
                                                     .data;
 
                                                 if (otpVer) {
@@ -353,6 +358,18 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: TextButton(
+                child: Text(
+                  'Privacy Policy',
+                  style: TextStyle(color: highLcolor, fontSize: 16),
+                ),
+                onPressed: () async {
+                  await launchUrl(Uri.parse('https://elie.world/Policy'));
+                },
+              ),
+            ),
           ],
         ));
   }
@@ -361,7 +378,7 @@ class _LoginPageState extends State<LoginPage> {
     FocusScope.of(context).requestFocus(FocusNode());
     try {
       Experts? ref = await API().getExpertByPhone(int.parse(phone.text));
-
+      print(ref.toString() + '3333');
       if (ref != null) {
         if (ref.password == pass.text) {
           showTopSnackBar(

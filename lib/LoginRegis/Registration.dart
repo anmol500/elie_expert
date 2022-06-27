@@ -11,7 +11,9 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../Utils/ExpertiseList.dart';
 import 'CustomButtons.dart';
 import 'Widgets/CustomTextField.dart';
 import 'login.dart';
@@ -50,16 +52,8 @@ class _RegisterationState extends State<Registeration> {
   List listsItems = ['Employee', 'Freelance'];
   String? vehicle;
   List vehicleList = ['2-Wheeler', '4-Wheeler', 'No'];
-  List expertiseList = [
-    'hair-cutting',
-    'colouring and styling',
-    'waxing',
-    'nail treatments',
-    'facials and skin care treatments',
-    'aromatherapy',
-    'tanning',
-    'massages'
-  ];
+  var visible = false;
+  var visible2 = false;
   var image;
   var imageAadhar1;
   var imageAadhar2;
@@ -73,6 +67,18 @@ class _RegisterationState extends State<Registeration> {
 
   setList(image) {
     this.tempList = image;
+  }
+
+  passwordShow() {
+    setState(() {
+      visible = !visible;
+    });
+  }
+
+  passwordShow2() {
+    setState(() {
+      visible2 = !visible2;
+    });
   }
 
   addImage() {
@@ -111,6 +117,7 @@ class _RegisterationState extends State<Registeration> {
     list = [];
     setState(() {});
   }
+
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -119,10 +126,13 @@ class _RegisterationState extends State<Registeration> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Center(
-            child: Image.asset(
-              'assets/logo.jpg',
-              height: 60,
-              width: 134,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'assets/logo.jpg',
+                height: 60,
+                width: 104,
+              ),
             ),
           ),
           elevation: 0,
@@ -143,8 +153,9 @@ class _RegisterationState extends State<Registeration> {
                   customTextField('Nickname', TextInputType.name, nickname),
                   customTextField('Expert\'s Phone Number', TextInputType.number, phone, mandate: true),
                   customTextField('Email', TextInputType.emailAddress, email, mandate: true),
-                  customTextField('Password', TextInputType.visiblePassword, pass, mandate: true),
-                  customTextField('Confirm Password', TextInputType.visiblePassword, cpass, mandate: true),
+                  customTextField('Password', TextInputType.visiblePassword, pass, onSuffixPress: passwordShow, visible: visible, mandate: true),
+                  customTextField('Confirm Password', TextInputType.visiblePassword, cpass,
+                      onSuffixPress: passwordShow2, visible: visible2, mandate: true),
                   customTextField('Experts Aadhar Number', TextInputType.number, aadhar, mandate: true),
                   customTextField('Experts Pan', TextInputType.name, pan, mandate: true),
                   customTextField('Expert\'s Address', TextInputType.streetAddress, address, line: 3, mandate: true),
@@ -302,7 +313,7 @@ class _RegisterationState extends State<Registeration> {
                             });
                           },
                           items: listItems.map<DropdownMenuItem<String>>(
-                                (valueItem) {
+                            (valueItem) {
                               return DropdownMenuItem<String>(
                                 value: valueItem,
                                 child: Text(valueItem),
@@ -385,7 +396,7 @@ class _RegisterationState extends State<Registeration> {
                             });
                           },
                           items: listsItems.map<DropdownMenuItem<String>>(
-                                (valueItem) {
+                            (valueItem) {
                               return DropdownMenuItem<String>(
                                 value: valueItem,
                                 child: Text(valueItem),
@@ -437,7 +448,7 @@ class _RegisterationState extends State<Registeration> {
                             });
                           },
                           items: vehicleList.map<DropdownMenuItem<String>>(
-                                (valueItem) {
+                            (valueItem) {
                               return DropdownMenuItem<String>(
                                 value: valueItem,
                                 child: Text(valueItem),
@@ -448,7 +459,7 @@ class _RegisterationState extends State<Registeration> {
                       ),
                     ),
                   ),
-                  vehicle == '2-Wheeler' && vehicle == '4-Wheeler'
+                  vehicle == '2-Wheeler' || vehicle == '4-Wheeler'
                       ? customTextField('Vehicle Registration No.', TextInputType.text, vehicleNo, mandate: true)
                       : Container(),
                   SizedBox(
@@ -457,9 +468,12 @@ class _RegisterationState extends State<Registeration> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: BorderRadiusButton(
-                      title: image == null ? 'Upload Your Photo' : 'Photo: '+image.name,
+                      title: image == null ? 'Upload Your Photo' : 'Photo: ' + image.name,
                       onPress: () async {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          withData: true,
+                          type: FileType.image,
+                        );
 
                         if (result != null) {
                           image = result.files.single;
@@ -473,9 +487,12 @@ class _RegisterationState extends State<Registeration> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: BorderRadiusButton(
-                      title: imageAadhar1 == null ? 'Upload Your Aadhar Front' :'Aadhar Front:' + imageAadhar1.name,
+                      title: imageAadhar1 == null ? 'Upload Your Aadhar Front' : 'Aadhar Front:' + imageAadhar1.name,
                       onPress: () async {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          withData: true,
+                          type: FileType.image,
+                        );
 
                         if (result != null) {
                           imageAadhar1 = result.files.single;
@@ -489,9 +506,12 @@ class _RegisterationState extends State<Registeration> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: BorderRadiusButton(
-                      title: imageAadhar2 == null ? 'Upload Your Aadhar Back' :'Aadhar Back:' + imageAadhar2.name,
+                      title: imageAadhar2 == null ? 'Upload Your Aadhar Back' : 'Aadhar Back:' + imageAadhar2.name,
                       onPress: () async {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          withData: true,
+                          type: FileType.image,
+                        );
 
                         if (result != null) {
                           imageAadhar2 = result.files.single;
@@ -507,10 +527,14 @@ class _RegisterationState extends State<Registeration> {
                     child: BorderRadiusButton(
                       title: imagePan == null ? 'Upload Your PAN' : 'PAN: ' + imagePan.name,
                       onPress: () async {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true);
+                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          withData: true,
+                          type: FileType.image,
+                        );
 
                         if (result != null) {
                           imagePan = result.files.single;
+
                           setState(() {});
                         } else {
                           // User canceled the picker
@@ -523,7 +547,8 @@ class _RegisterationState extends State<Registeration> {
                     child: BorderRadiusButton(
                       title: resume == null ? 'Upload Your Resume in PDF' : resume.name,
                       onPress: () async {
-                        FilePickerResult? result = await FilePicker.platform.pickFiles(withData: true
+                        FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          withData: true,
                           type: FileType.custom,
                           allowedExtensions: ['pdf'],
                         );
@@ -531,9 +556,7 @@ class _RegisterationState extends State<Registeration> {
                         if (result != null) {
                           resume = result.files.single;
                           setState(() {});
-                        } else {
-                          // User canceled the picker
-                        }
+                        } else {}
                       },
                     ),
                   ),
@@ -542,10 +565,9 @@ class _RegisterationState extends State<Registeration> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-
                       GestureDetector(
                         onTap: () async {
-                          FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image, allowMultiple: true,withData: true);
+                          FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image, allowMultiple: true, withData: true);
 
                           if (result != null) {
                             setList(result.files);
@@ -567,9 +589,9 @@ class _RegisterationState extends State<Registeration> {
                           width: 330,
                           child: Center(
                               child: Text(
-                                'Choose Photos For Portfolio',
-                                style: TextStyle(fontSize: 18),
-                              )),
+                            'Choose Photos For Portfolio',
+                            style: TextStyle(fontSize: 18),
+                          )),
                         ),
                       ),
                       SizedBox(
@@ -577,23 +599,22 @@ class _RegisterationState extends State<Registeration> {
                       ),
                       listOfImage.isEmpty
                           ? Container()
-                          :Container(
-                        height: 300,
-                        width: 330,
-
-                        child:  Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: highLcolorDark, width: 1),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(7),
-                              )),
-                          child: GridView.count(
-                            scrollDirection: Axis.horizontal,
-                            crossAxisCount: 2,
-                            children: [...images],
-                          ),
-                        ),
-                      )
+                          : Container(
+                              height: 300,
+                              width: 330,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: highLcolorDark, width: 1),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(7),
+                                    )),
+                                child: GridView.count(
+                                  scrollDirection: Axis.horizontal,
+                                  crossAxisCount: 2,
+                                  children: [...images],
+                                ),
+                              ),
+                            )
                     ],
                   ),
                   SizedBox(
@@ -609,27 +630,27 @@ class _RegisterationState extends State<Registeration> {
                         setState(() {});
                         print(_formKey.currentState!.validate());
                         if (_formKey.currentState!.validate()) {
-                          if(pass.text != cpass.text){
+                          if (pass.text != cpass.text) {
                             showTopSnackBar(
-                              context,
-                              CustomSnackBar.info(
-                                backgroundColor: highLcolor,
-                                message: "Passwords in both fields are not same",
-                              ),displayDuration: Duration(milliseconds: 6000)
-                            );
+                                context,
+                                CustomSnackBar.info(
+                                  backgroundColor: highLcolor,
+                                  message: "Passwords in both fields are not same",
+                                ),
+                                displayDuration: Duration(milliseconds: 6000));
                             btnLoad = false;
                             setState(() {});
-                          } else{
-                            var ref = (await Dio().get('http://$baseUrl:8001/get_expert_phone/${int.parse(phone.text)}')).data;
+                          } else {
+                            var ref = (await Dio().get('$baseUrl/get_expert_phone/${int.parse(phone.text)}')).data;
                             if (ref == null) {
                               showTopSnackBar(
-                                context,
-                                CustomSnackBar.success(
-                                  backgroundColor: Colors.green,
-                                  message: "just A Moment",
-                                ),displayDuration: Duration(milliseconds: 500)
-                              );
-                              await Dio().post('http://$baseUrl:8001/register_expert', data: {
+                                  context,
+                                  CustomSnackBar.success(
+                                    backgroundColor: Colors.green,
+                                    message: "This may take a while",
+                                  ),
+                                  displayDuration: Duration(milliseconds: 500));
+                              await Dio().post('$baseUrl/register_expert', data: {
                                 "name": name.text,
                                 "nickname": nickname.text,
                                 "sex": gender,
@@ -650,32 +671,28 @@ class _RegisterationState extends State<Registeration> {
                                 'serviceablePins': serviceablePin.text,
                                 'serviceList': expertise.text,
                                 'vehicle': vehicle,
+                                'vehicleNo': vehicleNo.text,
+                                'status': "Pending"
                               });
-
 
                               if (image != null) {
                                 print(image);
-                                await Dio().post('http://$baseUrl:8001/addExpertProfilePic/${phone.text}', data: image.bytes);
+                                await Dio().post('$baseUrl/addExpertProfilePic/${phone.text}', data: image.bytes);
                               }
                               if (imagePan != null) {
                                 print(imagePan);
-                                await Dio().post('http://$baseUrl:8001/add_expert_pan/${phone.text}', data: imagePan.bytes);
+                                await Dio().post('$baseUrl/add_expert_pan/${phone.text}', data: imagePan.bytes);
                               }
                               if (imageAadhar1 != null && imageAadhar2 != null) {
-                                await Dio().post('http://$baseUrl:8001/add_expert_aadhar/${phone.text}', data: [imageAadhar1.bytes,imageAadhar2.bytes]);
+                                await Dio().post('$baseUrl/add_expert_aadhar/${phone.text}', data: [imageAadhar1.bytes, imageAadhar2.bytes]);
                               }
 
                               if (resume != null) {
-                                await Dio().post('http://$baseUrl:8001/add_expert_resume/${phone.text}', data: resume.bytes);
+                                await Dio().post('$baseUrl/add_expert_resume/${phone.text}', data: resume.bytes);
                               }
-                              if (imagesB.isNotEmpty ) {
-                                await Dio().post('http://$baseUrl:8001/add_expert_experience/${phone.text}', data: imagesB);
+                              if (imagesB.isNotEmpty) {
+                                await Dio().post('$baseUrl/add_expert_experience/${phone.text}', data: imagesB);
                               }
-
-
-
-
-
 
                               SharedPreferences prefs = await SharedPreferences.getInstance();
                               int userPhone = int.parse(phone.text);
@@ -691,12 +708,12 @@ class _RegisterationState extends State<Registeration> {
                               Navigator.push((context), MaterialPageRoute(builder: (context) => HomePage()));
                             } else {
                               showTopSnackBar(
-                                context,
-                                CustomSnackBar.info(
-                                  backgroundColor: highLcolor,
-                                  message: "${int.parse(phone.text)} is already registered",
-                                ),displayDuration: Duration(milliseconds: 500)
-                              );
+                                  context,
+                                  CustomSnackBar.info(
+                                    backgroundColor: highLcolor,
+                                    message: "${int.parse(phone.text)} is already registered",
+                                  ),
+                                  displayDuration: Duration(milliseconds: 500));
                               btnLoad = false;
                               setState(() {});
                             }
@@ -747,6 +764,18 @@ class _RegisterationState extends State<Registeration> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: TextButton(
+                      child: Text(
+                        'Privacy Policy',
+                        style: TextStyle(color: highLcolor, fontSize: 16),
+                      ),
+                      onPressed: () async {
+                        await launchUrl(Uri.parse('https://elie.world/Policy'));
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -755,8 +784,8 @@ class _RegisterationState extends State<Registeration> {
   }
 
   void showMultiSelectExpertise(
-      BuildContext context,
-      ) async {
+    BuildContext context,
+  ) async {
     final item = expertiseList.map((e) => MultiSelectItem(expertiseList.indexOf(e), e)).toList();
     await showDialog(
       context: context,
@@ -784,8 +813,8 @@ class _RegisterationState extends State<Registeration> {
   }
 
   void showMultiSelectPincodes(
-      BuildContext context,
-      ) async {
+    BuildContext context,
+  ) async {
     final item = pinCodes.map((e) => MultiSelectItem(pinCodes.indexOf(e), e)).toList();
     await showDialog(
       context: context,

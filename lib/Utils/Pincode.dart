@@ -1,4 +1,8 @@
 List pinCodes = [
+  'Ritz Carlton Pune(1)',
+  'Panchshil Towers(2)',
+  'Uno Training School(3)',
+  'Uno Salon(4)',
   'A.R. shala(411004)',
   'Afmc(411040)',
   'Adhale Bk(410506)',

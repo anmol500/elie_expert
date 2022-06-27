@@ -23,6 +23,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   var lat;
   var long;
   bool isActive = false;
+  bool pressed = false;
   bool done = false;
 
   @override
@@ -54,7 +55,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         style: TextStyle(fontSize: 18, color: highLcolorLight),
       ),
       // logo
-      image: 'http://$baseUrl:8001/getServiceImageByID/${widget.service.id}',
+      image: '$baseUrl/getServiceImageByID/${widget.service.id}',
       submitButtonText: 'Submit',
       submitButtonTextStyle: TextStyle(color: highLcolor, fontSize: 18),
       commentHint: 'Tell us about your experience',
@@ -122,7 +123,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           Center(
                             child: Padding(
                               padding: EdgeInsets.all(10),
-                              child: Image.network("http://$baseUrl:8001/getServiceImageByID/${widget.service.id}"),
+                              child: Image.network("$baseUrl/getServiceImageByID/${widget.service.id}"),
                             ),
                           ),
                           Expanded(
@@ -232,7 +233,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                     onPress: isActive
                                         ? null
                                         : () async {
-                                            await Dio().put('http://$baseUrl:8001/button_startTime/${widget.order.orderId}');
+                                            await Dio().put('$baseUrl/button_startTime/${widget.order.orderId}');
                                             setState(() {
                                               isActive = !isActive;
                                             });
@@ -250,13 +251,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                     onPress: !isActive
                                         ? null
                                         : () async {
-                                            await Dio().put('http://$baseUrl:8001/button_endTime/${widget.order.orderId}');
+                                            setState(() {
+                                              pressed = true;
+                                            });
+                                            await Dio().put('$baseUrl/button_endTime/${widget.order.orderId}');
                                             setState(() {
                                               isActive = !isActive;
                                               done = true;
                                             });
                                           },
-                                    title: 'End Service',
+                                    title: pressed ? "Ending..." : 'End Service',
                                   ),
                                 ),
                               )),

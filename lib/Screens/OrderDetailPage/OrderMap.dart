@@ -76,14 +76,6 @@ class _OrderMapState extends State<OrderMap> {
           color: color,
           size: 48,
         ),
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Text("Client's Address"),
-            ),
-          );
-        },
       ),
     );
   }
@@ -109,7 +101,7 @@ class _OrderMapState extends State<OrderMap> {
           final markerPositions = markers.map(transformer.fromLatLngToXYCoords).toList();
 
           final markerWidgets = markerPositions.map(
-            (pos) => _buildMarkerWidget(pos, Colors.red),
+            (pos) => _buildMarkerWidget(pos, highLcolorDark),
           );
 
           return GestureDetector(
@@ -152,7 +144,7 @@ class _OrderMapState extends State<OrderMap> {
         backgroundColor: highLcolor,
         onPressed: _gotoDefault,
         tooltip: 'My Location',
-        child: Icon(Icons.map_outlined),
+        child: Icon(Icons.near_me),
       ),
     );
   }

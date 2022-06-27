@@ -45,7 +45,6 @@ class _BackgroundImageButtonState extends State<BackgroundImageButton> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.btnLoad.toString() + " build");
     return GestureDetector(
         onTap: () {
           btnWidget = Container(
@@ -130,7 +129,7 @@ class _BorderRadiusButtonState extends State<BorderRadiusButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         btnWidget = Container(
           height: 50,
           width: 50,
@@ -147,10 +146,10 @@ class _BorderRadiusButtonState extends State<BorderRadiusButton> {
             ),
           ),
         );
-        widget.onPress();
-        setState(() {});
+        await widget.onPress();
+
         print(1);
-        Timer(Duration(seconds: 3), () {
+        Timer(Duration(seconds: 2), () {
           btnWidget = Container(
             height: 50,
             width: 120,
